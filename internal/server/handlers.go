@@ -8,6 +8,7 @@ import (
 )
 
 func middleware(next http.HandlerFunc) http.HandlerFunc {
+
 	Data := "Middleware layer"
 	return func(w http.ResponseWriter, r *http.Request) {
 		r.Header.Add("", "")
@@ -20,6 +21,7 @@ func middleware(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
+
 	contextData := r.Context().Value("data").(string)
 
 	err := json.NewEncoder(w).Encode(map[string]interface{}{"middleware": contextData})

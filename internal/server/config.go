@@ -1,10 +1,15 @@
 package server
 
-import "net/http"
+import (
+	"encoding/json"
+	"flag"
+	"log"
+	"net/http"
+	"os"
+)
 
 type Config struct {
-	Addr string
-	Port string
+	BindAddr string `json:"bind_addr"`
 }
 
 type Server struct {
@@ -13,10 +18,39 @@ type Server struct {
 }
 
 func NewConfig() *Server {
+	cfg := ParseConfig()
+	if cfg.BindAddr == "" {
+		cfg.BindAddr = "0.0.0.0:8080"
+	}
 	return &Server{
 		Params: Config{
-			Addr: "0.0.0.0", Port: "8080",
+			BindAddr: cfg.BindAddr,
 		},
 		Router: http.NewServeMux(),
 	}
+}
+
+var path string
+
+func init() {
+	flag.StringVar(&path, "config", "./config/config.json", "path to path config json")
+	flag.Parse()
+}
+
+func ParseConfig() Config {
+	var conf Config
+	byteData := OpenConfig(path)
+	err := json.Unmarshal(byteData, &conf)
+	if err != nil {
+		log.Println(err)
+	}
+	return conf
+}
+
+func OpenConfig(jsonPath string) []byte {
+	conf, err := os.ReadFile(jsonPath)
+	if err != nil {
+		log.Println(err)
+	}
+	return conf
 }

@@ -1,0 +1,9 @@
+[Unit]
+Description=go-http server
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/go-http-server -config /etc/go-http-server/config.json
+
+[Install]
+WantedBy=multi-user.target

@@ -6,14 +6,15 @@ import (
 )
 
 func (s *Server) Run() {
+
 	mux := s.Router
 	mux.HandleFunc("/", Index)
 
-	bindAddr := s.Params.Addr + ":" + s.Params.Port
 	srv := &http.Server{
-		Addr:    bindAddr,
+		Addr:    s.Params.BindAddr,
 		Handler: middleware(mux.ServeHTTP),
 	}
-	log.Println("Server listen on", bindAddr)
+	log.Println("Server listen on", s.Params.BindAddr)
 	log.Fatal(srv.ListenAndServe())
+
 }
